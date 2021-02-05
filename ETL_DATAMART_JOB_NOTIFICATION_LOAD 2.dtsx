@@ -1,0 +1,543 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/12/2019 5:55:50 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ROAMIE"
+  DTS:CreatorName="JNCB\KathiravanS"
+  DTS:DTSID="{002DD42A-420A-4ADC-82C6-D73F293635E5}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="13.0.4001.0"
+  DTS:LocaleID="8201"
+  DTS:ObjectName="ETL_DATAMART_JOB_NOTIFICATION_LOAD"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="529"
+  DTS:VersionGUID="{F9E61F95-7C06-4361-B962-63A37AE98305}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CM_AUDIT_FRAMEWORK_FIN10]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{55D020E1-9477-4BC0-8BD8-B3A11BD1E8EA}"
+      DTS:ObjectName="CM_AUDIT_FRAMEWORK_FIN10">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.;Initial Catalog=Audit_Framework_FIN10;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C1DD1C55-C159-4D21-9BE9-42B29CFF086E}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&#xA;&#xA;DECLARE @SUCCESS_COUNT_PX3000 INT&#xA;DECLARE @FAILURE_COUNT_PX3000 INT&#xA;DECLARE @SUCCESS_COUNT_ONLINE INT&#xA;DECLARE @FAILURE_COUNT_ONLINE INT&#xA;&#xA;&#xA;SELECT @SUCCESS_COUNT_PX3000 =  COUNT(1)&#xA;&#xA;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM &#xA;&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#xA;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#xA;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#xA;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;&#xA;&#x9;&#x9;&#x9;(&#xA;&#xA;                   24,25,26,27,28&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#xA;&#x9;&#x9;&#x9;) RES&#xA;&#xA;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;SELECT @FAILURE_COUNT_PX3000 = COUNT(1)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;&#xA;                    24,25,26,27,28&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RES&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG = 'FAILED' )R&#xA;&#xA;&#xA;&#xA;SELECT @SUCCESS_COUNT_ONLINE =  COUNT(1)&#xA;&#xA;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM &#xA;&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#xA;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#xA;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#xA;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;&#xA;&#x9;&#x9;&#x9;(&#xA;&#xA;                   37,38,39,40,41,42&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#xA;&#x9;&#x9;&#x9;) RES&#xA;&#xA;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;SELECT @FAILURE_COUNT_ONLINE = COUNT(1)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;&#xA;                    37,38,39,40,41,42&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RES&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG = 'FAILED' )R&#xA;&#xA;&#xA;SELECT ?=  @SUCCESS_COUNT_PX3000&#xA;&#xA;SELECT ?=  @FAILURE_COUNT_PX3000&#xA;SELECT ?=  @SUCCESS_COUNT_ONLINE&#xA;SELECT ?=  @FAILURE_COUNT_ONLINE&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Execution_Status_Query">
+      <DTS:VariableValue
+        DTS:DataType="8">
+
+DECLARE @SUCCESS_COUNT_PX3000 INT
+DECLARE @FAILURE_COUNT_PX3000 INT
+DECLARE @SUCCESS_COUNT_ONLINE INT
+DECLARE @FAILURE_COUNT_ONLINE INT
+
+
+SELECT @SUCCESS_COUNT_PX3000 =  COUNT(1)
+
+		FROM ( SELECT RW,STATUS_FLAG FROM 
+
+				(
+
+			SELECT ROW_NUMBER() OVER (
+
+					PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+
+					) RW,STATUS_FLAG
+
+			FROM [DBO].[BATCH_EXECUTION_STATUS]
+
+			WHERE PACKAGE_ID IN 
+
+			(
+
+                   24,25,26,27,28
+
+					)
+
+				AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+
+			) RES
+
+		WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R
+
+
+
+
+
+SELECT @FAILURE_COUNT_PX3000 = COUNT(1)
+
+				FROM ( SELECT RW,STATUS_FLAG FROM
+
+				(
+
+					SELECT ROW_NUMBER() OVER (
+
+							PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+
+							) RW,STATUS_FLAG
+
+					FROM [DBO].[BATCH_EXECUTION_STATUS]
+
+					WHERE PACKAGE_ID IN 
+
+					 (
+
+                    24,25,26,27,28
+
+					)
+
+						AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+
+					) RES
+
+				WHERE RW = 1 AND STATUS_FLAG = 'FAILED' )R
+
+
+
+SELECT @SUCCESS_COUNT_ONLINE =  COUNT(1)
+
+		FROM ( SELECT RW,STATUS_FLAG FROM 
+
+				(
+
+			SELECT ROW_NUMBER() OVER (
+
+					PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+
+					) RW,STATUS_FLAG
+
+			FROM [DBO].[BATCH_EXECUTION_STATUS]
+
+			WHERE PACKAGE_ID IN 
+
+			(
+
+                   37,38,39,40,41,42
+
+					)
+
+				AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+
+			) RES
+
+		WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R
+
+
+
+
+
+SELECT @FAILURE_COUNT_ONLINE = COUNT(1)
+
+				FROM ( SELECT RW,STATUS_FLAG FROM
+
+				(
+
+					SELECT ROW_NUMBER() OVER (
+
+							PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+
+							) RW,STATUS_FLAG
+
+					FROM [DBO].[BATCH_EXECUTION_STATUS]
+
+					WHERE PACKAGE_ID IN 
+
+					 (
+
+                    37,38,39,40,41,42
+
+					)
+
+						AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+
+					) RES
+
+				WHERE RW = 1 AND STATUS_FLAG = 'FAILED' )R
+
+
+SELECT ?=  @SUCCESS_COUNT_PX3000
+
+SELECT ?=  @FAILURE_COUNT_PX3000
+SELECT ?=  @SUCCESS_COUNT_ONLINE
+SELECT ?=  @FAILURE_COUNT_ONLINE</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0B407A8E-948B-4517-B6BF-60BB246B1596}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Execution_Status_Table_Name">
+      <DTS:VariableValue
+        DTS:DataType="8">DBO.ALL_JOB_DETAILS</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E14FD7EE-4594-4BB8-A4DF-630561638EDF}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Failure_Count_ONLINE">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{25392676-6BCC-44DC-B4DA-C48F09ED738D}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Failure_Count_PX3000">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2AA25695-0761-4294-AE95-06A737120FC3}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::p_JOB_COUNT_ONLINE]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Job_Count_ONLINE">
+      <DTS:VariableValue
+        DTS:DataType="3">6</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{03A709D4-E571-4F4E-9029-99375F2508F1}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::p_JOB_COUNT_PX3000]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Job_Count_PX3000">
+      <DTS:VariableValue
+        DTS:DataType="3">5</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E479850F-CBB5-4028-A42F-623A1C1C3223}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Source_Name_ONLINE">
+      <DTS:VariableValue
+        DTS:DataType="8">ONLINE</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4D0BBF27-7B37-4A7A-996A-831712A00409}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Source_Name_PX3000">
+      <DTS:VariableValue
+        DTS:DataType="8">PX3000</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0092E474-7638-460D-AF50-1B9FE13BDEFF}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Success_Count_ONLINE">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3AE9F3C2-6A65-470C-ADCD-1C76870FFAFC}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Success_Count_PX3000">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7F2E4187-5F6F-436E-A625-940F86DF6DCB}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;TRUNCATE TABLE &quot; +  @[User::v_Execution_Status_Table_Name]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Trunc_Query">
+      <DTS:VariableValue
+        DTS:DataType="8">TRUNCATE TABLE DBO.ALL_JOB_DETAILS</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SQL_ALL_JOB_DETAILS_LOAD"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{0b8f34ae-8f1d-450a-9cb2-dbba67bc028e}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_ALL_JOB_DETAILS_LOAD"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{55D020E1-9477-4BC0-8BD8-B3A11BD1E8EA}"
+          SQLTask:SqlStatementSource="&#xA; DECLARE @v_Source_Name_PX3000 VARCHAR(15)= ?&#xA; DECLARE @v_Job_Count_PX3000 BIGINT = ?&#xA; DECLARE @v_Success_Count_PX3000 BIGINT = ?&#xA; DECLARE @v_Failure_Count_PX3000 BIGINT= ?&#xA; DECLARE @v_Source_Name_ONLINE VARCHAR(15)= ?&#xA; DECLARE @v_Job_Count_ONLINE BIGINT = ?&#xA; DECLARE @v_Success_Count_ONLINE BIGINT = ?&#xA; DECLARE @v_Failure_Count_ONLINE BIGINT= ?&#xA;&#xA;INSERT INTO DBO.ALL_JOB_DETAILS (SOURCE_NAME,JOB_COUNT,SUCCESS_COUNT,FAILURE_COUNT) VALUES (@v_Source_Name_PX3000,@v_Job_Count_PX3000,@v_Success_Count_PX3000,@v_Failure_Count_PX3000)&#xA;&#xA;INSERT INTO DBO.ALL_JOB_DETAILS (SOURCE_NAME,JOB_COUNT,SUCCESS_COUNT,FAILURE_COUNT) VALUES (@v_Source_Name_ONLINE,@v_Job_Count_ONLINE,@v_Success_Count_ONLINE,@v_Failure_Count_ONLINE)" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::v_Source_Name_PX3000"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="User::v_Job_Count_PX3000"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="2"
+            SQLTask:DtsVariableName="User::v_Success_Count_PX3000"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="3"
+            SQLTask:DtsVariableName="User::v_Failure_Count_PX3000"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="4"
+            SQLTask:DtsVariableName="User::v_Source_Name_ONLINE"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="5"
+            SQLTask:DtsVariableName="User::v_Job_Count_ONLINE"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="6"
+            SQLTask:DtsVariableName="User::v_Success_Count_ONLINE"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="7"
+            SQLTask:DtsVariableName="User::v_Failure_Count_ONLINE"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_ALL_JOB_DETAILS_TRUNCATE_TABLE"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{eeaeaeee-23ec-441c-ab4c-d2ff421cc7fb}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_ALL_JOB_DETAILS_TRUNCATE_TABLE"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{55D020E1-9477-4BC0-8BD8-B3A11BD1E8EA}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::v_Trunc_Query" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_BATCH_EXECUTION_STATUS_COUNT"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{66027A00-F0CB-4D33-892F-AC5760BB7BF4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_BATCH_EXECUTION_STATUS_COUNT"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{55D020E1-9477-4BC0-8BD8-B3A11BD1E8EA}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::v_Execution_Status_Query"
+          SQLTask:TypeConversionMode="None" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::v_Success_Count_PX3000"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="User::v_Failure_Count_PX3000"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="2"
+            SQLTask:DtsVariableName="User::v_Success_Count_ONLINE"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="3"
+            SQLTask:DtsVariableName="User::v_Failure_Count_ONLINE"
+            SQLTask:ParameterDirection="Output"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_JOB_NOTIFICATION"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{32ED2EEB-9DC2-49FE-BFB4-2B5457FACD46}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_JOB_NOTIFICATION"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{55D020E1-9477-4BC0-8BD8-B3A11BD1E8EA}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[SP_ALL_JOBS_NOTIFICATION1]  &#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{83F61575-EA5D-4168-9C21-E6AB07703602}"
+      DTS:From="Package\SQL_BATCH_EXECUTION_STATUS_COUNT"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\SQL_ALL_JOB_DETAILS_TRUNCATE_TABLE" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{6D19358C-C8C5-4C5D-9710-F20CBCA4EFB5}"
+      DTS:From="Package\SQL_ALL_JOB_DETAILS_TRUNCATE_TABLE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\SQL_ALL_JOB_DETAILS_LOAD" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{C5486020-D6AF-44EF-BF4C-3F3319EBA6A7}"
+      DTS:From="Package\SQL_ALL_JOB_DETAILS_LOAD"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\SQL_JOB_NOTIFICATION" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="284.8,41.6"
+          Id="Package\SQL_BATCH_EXECUTION_STATUS_COUNT"
+          TopLeft="237.535718096763,66.7294118590834" />
+        <NodeLayout
+          Size="284.8,41.6"
+          Id="Package\SQL_JOB_NOTIFICATION"
+          TopLeft="237.535718096763,311.076472868309" />
+        <NodeLayout
+          Size="284.8,41.6"
+          Id="Package\SQL_ALL_JOB_DETAILS_TRUNCATE_TABLE"
+          TopLeft="238.107146677923,150.013726338878" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="380.221432387343,108.329411859083">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41.6843144797948"
+              Start="0,0"
+              End="0,34.1843144797948">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.1843144797948" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="284.8,41.6"
+          Id="Package\SQL_ALL_JOB_DETAILS_LOAD"
+          TopLeft="237.535718096763,229.6274525319" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="380.221432387343,191.613726338878">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.0137261930221"
+              Start="0,0"
+              End="0,30.5137261930221">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.5137261930221" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="379.935718096763,271.2274525319">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.8490203364084"
+              Start="0,0"
+              End="0,32.3490203364084">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.3490203364084" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

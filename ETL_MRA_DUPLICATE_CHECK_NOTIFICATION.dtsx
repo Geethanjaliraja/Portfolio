@@ -1,0 +1,597 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/3/2020 7:28:41 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ROAMIE"
+  DTS:CreatorName="JNCB\rajag"
+  DTS:DTSID="{480911FC-A7B4-41D4-A437-09489DAFB8D3}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0600.250"
+  DTS:LocaleID="8201"
+  DTS:ObjectName="ETL_MRA_DUPLICATE_CHECK_NOTIFICATION"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="78"
+  DTS:VersionGUID="{FC6CBF12-CAE7-470D-A35A-BA20C82EF4DB}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CM_EIMDW_DW_RA]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{D66744DA-DAAD-4393-AD3C-0FE604895B3D}"
+      DTS:ObjectName="CM_EIMDW_DW_RA">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::p_DW_DATABASE]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::p_DW_SERVER]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=XENIA;Initial Catalog=PROD_EIMDW_DW_RA;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CM_EMAIL_MSDB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{A5D8EB17-5735-40F2-8E45-40ECB70B65D6}"
+      DTS:ObjectName="CM_EMAIL_MSDB">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::p_EMAIL_DATABASE]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::p_EMAIL_SERVER]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=XENIA;Initial Catalog=Amber_Audit_SQL_Jobs;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{24792B2F-A455-4B73-A461-00A20D8629DE}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6AEDDEF6-C2A7-4145-B8EE-A0D3E0266238}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Duplicate_Count">
+      <DTS:VariableValue
+        DTS:DataSubType="ManagedSerializable"
+        DTS:DataType="13">
+        <SOAP-ENV:Envelope xmlns:clr="http://schemas.microsoft.com/soap/encoding/clr/1.0" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+          <SOAP-ENV:Body>
+            <xsd:anyType
+              id="ref-1"></xsd:anyType>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C2CE742D-26C9-4DDC-80F3-896E971E362F}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Duplicate_Count_HTD">
+      <DTS:VariableValue
+        DTS:DataSubType="ManagedSerializable"
+        DTS:DataType="13">
+        <SOAP-ENV:Envelope xmlns:clr="http://schemas.microsoft.com/soap/encoding/clr/1.0" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+          <SOAP-ENV:Body>
+            <xsd:anyType
+              id="ref-1"></xsd:anyType>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BDE56D3F-B5BC-4A85-8211-6ABB1938651F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Duplication_Table_Name">
+      <DTS:VariableValue
+        DTS:DataType="8">DBO.MRA_DUPLICATION_DETAILS</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{415F2633-453A-4904-91DA-68E6D16044CB}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_RUN_DATE">
+      <DTS:VariableValue
+        DTS:DataType="7">4/22/2020 11:51:19 AM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{456F3F11-6EEB-4944-97B7-4AD88D92D0C4}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Table_Name">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{185E8D15-7095-4343-A73D-540D7E33AD91}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Task_Name">
+      <DTS:VariableValue
+        DTS:DataType="8">MRA_DUPLICATION_DETAILS</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{45FF466E-A987-4F91-B95A-0F4E3D033349}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;TRUNCATE TABLE &quot; +   @[User::v_Duplication_Table_Name]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Truncate_Table">
+      <DTS:VariableValue
+        DTS:DataType="8">TRUNCATE TABLE DBO.MRA_DUPLICATION_DETAILS</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\DUPLICATION_DETAILS"
+      DTS:CreationName="STOCK:FOREACHLOOP"
+      DTS:Description="Foreach Loop Container"
+      DTS:DTSID="{D00A08C5-EA63-459A-B435-2DCBE2ABDEFA}"
+      DTS:ExecutableType="STOCK:FOREACHLOOP"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DUPLICATION_DETAILS">
+      <DTS:ForEachEnumerator
+        DTS:CreationName="Microsoft.ForEachADOEnumerator"
+        DTS:DTSID="{F1FE7290-B79D-4C34-A82A-EDFA815C0012}"
+        DTS:ObjectName="{F1FE7290-B79D-4C34-A82A-EDFA815C0012}">
+        <DTS:ObjectData>
+          <FEEADO
+            EnumType="EnumerateRowsInFirstTable"
+            VarName="User::v_Duplicate_Count" />
+        </DTS:ObjectData>
+      </DTS:ForEachEnumerator>
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\DUPLICATION_DETAILS\SQL_MRA_DUPLICATION_DETAILS_LOAD"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{76C98D65-FA82-4DD8-8815-6EB634AD6740}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL_MRA_DUPLICATION_DETAILS_LOAD"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="Name">"SQL_" +  @[User::v_Task_Name] + "_LOAD"</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{A5D8EB17-5735-40F2-8E45-40ECB70B65D6}"
+              SQLTask:SqlStatementSource=" DECLARE @v_Table_Name VARCHAR(200) = ?&#xA; DECLARE @v_Count BIGINT = ?&#xA; DECLARE @v_RUN_DATE DATETIME = ?&#xA;&#xA;INSERT INTO DBO.MRA_DUPLICATION_DETAILS (TABLE_NAME,COUNT,RUN_DATE) VALUES (@v_Table_Name,@v_Count,@v_RUN_DATE)" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::v_Table_Name"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::v_Count"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="User::v_RUN_DATE"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:ForEachVariableMappings>
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{43B9C9DF-8A1B-4502-99E0-6778C3FAFB21}"
+          DTS:ObjectName="{43B9C9DF-8A1B-4502-99E0-6778C3FAFB21}"
+          DTS:ValueIndex="0"
+          DTS:VariableName="User::v_Table_Name" />
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{66134CFB-1C22-49C4-912C-8F7C390897BE}"
+          DTS:ObjectName="{66134CFB-1C22-49C4-912C-8F7C390897BE}"
+          DTS:ValueIndex="1"
+          DTS:VariableName="User::v_Count" />
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{91D62E57-448A-4F48-9CA6-B95E9B7C515A}"
+          DTS:ObjectName="{91D62E57-448A-4F48-9CA6-B95E9B7C515A}"
+          DTS:ValueIndex="2"
+          DTS:VariableName="User::v_RUN_DATE" />
+      </DTS:ForEachVariableMappings>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DUPLICATION_DETAILS_HTD"
+      DTS:CreationName="STOCK:FOREACHLOOP"
+      DTS:Description="Foreach Loop Container"
+      DTS:DTSID="{37308636-7305-4681-A2EC-20154B702138}"
+      DTS:ExecutableType="STOCK:FOREACHLOOP"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DUPLICATION_DETAILS_HTD">
+      <DTS:ForEachEnumerator
+        DTS:CreationName="Microsoft.ForEachADOEnumerator"
+        DTS:DTSID="{E41E917E-C18E-4604-862D-B94FA78AF89A}"
+        DTS:ObjectName="{F1FE7290-B79D-4C34-A82A-EDFA815C0012}">
+        <DTS:ObjectData>
+          <FEEADO
+            EnumType="EnumerateRowsInFirstTable"
+            VarName="User::v_Duplicate_Count_HTD" />
+        </DTS:ObjectData>
+      </DTS:ForEachEnumerator>
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\DUPLICATION_DETAILS_HTD\SQL_MRA_DUPLICATION_DETAILS_LOAD"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{3CE395DB-C1EF-4F80-BF2B-97AB487F09D0}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL_MRA_DUPLICATION_DETAILS_LOAD"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="Name">"SQL_" +  @[User::v_Task_Name] + "_LOAD"</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{A5D8EB17-5735-40F2-8E45-40ECB70B65D6}"
+              SQLTask:SqlStatementSource=" DECLARE @v_Table_Name VARCHAR(200) = ?&#xA; DECLARE @v_Count BIGINT = ?&#xA; DECLARE @v_RUN_DATE DATETIME = ?&#xA;&#xA;INSERT INTO DBO.[MRA_DUPLICATION_DETAILS] (TABLE_NAME,COUNT,RUN_DATE) VALUES (@v_Table_Name,@v_Count,@v_RUN_DATE)" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::v_Table_Name"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::v_Count"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="User::v_RUN_DATE"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:ForEachVariableMappings>
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{B96B53C7-B95F-4BCF-9F39-F05AC383DC08}"
+          DTS:ObjectName="{B96B53C7-B95F-4BCF-9F39-F05AC383DC08}"
+          DTS:ValueIndex="0"
+          DTS:VariableName="User::v_Table_Name" />
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{AADB6A24-30CE-4A44-8488-32CD8B851098}"
+          DTS:ObjectName="{AADB6A24-30CE-4A44-8488-32CD8B851098}"
+          DTS:ValueIndex="1"
+          DTS:VariableName="User::v_Count" />
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{BEAF2D0E-6612-4972-8B77-5A7853C50324}"
+          DTS:ObjectName="{BEAF2D0E-6612-4972-8B77-5A7853C50324}"
+          DTS:ValueIndex="2"
+          DTS:VariableName="User::v_RUN_DATE" />
+      </DTS:ForEachVariableMappings>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_MRA_DUPLICATION_DETAILS_FACT_HTD_TABLE"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{784D5923-4114-421E-B9A0-23B4753B0AB3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_MRA_DUPLICATION_DETAILS_FACT_HTD_TABLE"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Name">"SQL_" +@[User::v_Task_Name]+"_FACT_HTD_TABLE"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{D66744DA-DAAD-4393-AD3C-0FE604895B3D}"
+          SQLTask:SqlStatementSource="SELECT 'FACT_TRANSACTION_DETAILS' AS Table_Name&#xA; ,COUNT(1) AS COUNT&#xA; ,GETDATE() AS RUN_DATE&#xA;FROM (&#xA; SELECT COUNT(1) AS COUNT&#xA; FROM DBO.FACT_TRANSACTION_DETAILS NOLOCK&#xA; WHERE ETL_ACTIVE_FLAG = 'Y'&#xA; GROUP BY TRAN_DATE&#xA;  ,TRAN_ID&#xA;  ,PART_TRAN_SRL_NUM&#xA;  ,BANK_ID&#xA; HAVING count(1) &gt; 1&#xA; ) RES"
+          SQLTask:ResultType="ResultSetType_Rowset" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::v_Duplicate_Count_HTD" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_MRA_DUPLICATION_DETAILS_MAIL_NOTIFICATION_TASK"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{266BAC60-20D3-458F-BC8D-A0BC63D64C8A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_MRA_DUPLICATION_DETAILS_MAIL_NOTIFICATION_TASK"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Name">"SQL_"+ @[User::v_Task_Name]+"_MAIL_NOTIFICATION_TASK"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{A5D8EB17-5735-40F2-8E45-40ECB70B65D6}"
+          SQLTask:SqlStatementSource="EXEC DBO.[SP_SEND_EMAIL_MRA_CHECK_DUPLICATION]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_MRA_DUPLICATION_DETAILS_TASK"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{2C7A2142-F27C-485C-82DE-ED6CAA51A219}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_MRA_DUPLICATION_DETAILS_TASK"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Name">"SQL_" +@[User::v_Task_Name]+"_TASK"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{D66744DA-DAAD-4393-AD3C-0FE604895B3D}"
+          SQLTask:SqlStatementSource="EXEC DBO.SP_CHECK_DUPLICATION"
+          SQLTask:ResultType="ResultSetType_Rowset" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::v_Duplicate_Count" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_MRA_DUPLICATION_DETAILS_TRUNCATE_TABLE"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{126B7880-B70E-4F14-B6A7-75BB1755BE5A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_MRA_DUPLICATION_DETAILS_TRUNCATE_TABLE"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2017 CTP2.1; © 2017 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="Name">"SQL_"+ @[User::v_Task_Name]+"_TRUNCATE_TABLE"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{A5D8EB17-5735-40F2-8E45-40ECB70B65D6}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::v_Truncate_Table" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{BB1C878D-9A1B-437B-BB0A-5DF68EA4936E}"
+      DTS:From="Package\SQL_MRA_DUPLICATION_DETAILS_TASK"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\SQL_MRA_DUPLICATION_DETAILS_TRUNCATE_TABLE" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{7F3F6136-1D05-437E-BC62-1B5100346BD8}"
+      DTS:From="Package\SQL_MRA_DUPLICATION_DETAILS_TRUNCATE_TABLE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\DUPLICATION_DETAILS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{71D5C91B-2663-445E-8C88-4599DF013EDD}"
+      DTS:From="Package\DUPLICATION_DETAILS_HTD"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\SQL_MRA_DUPLICATION_DETAILS_MAIL_NOTIFICATION_TASK" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{EDDB88B0-4CE4-42B7-B933-0E548E33F5DE}"
+      DTS:From="Package\DUPLICATION_DETAILS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\SQL_MRA_DUPLICATION_DETAILS_FACT_HTD_TABLE" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{1222EE9A-9BD4-4191-BD53-64855D9C36CD}"
+      DTS:From="Package\SQL_MRA_DUPLICATION_DETAILS_FACT_HTD_TABLE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\DUPLICATION_DETAILS_HTD" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="276,42"
+          Id="Package\DUPLICATION_DETAILS\SQL_MRA_DUPLICATION_DETAILS_LOAD"
+          TopLeft="40.228578503278,40.2823572310609" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="379,141"
+          Size="379,184"
+          Id="Package\DUPLICATION_DETAILS"
+          TopLeft="334.285719978566,224.414119874367" />
+        <NodeLayout
+          Size="276,42"
+          Id="Package\DUPLICATION_DETAILS_HTD\SQL_MRA_DUPLICATION_DETAILS_LOAD"
+          TopLeft="39.6571499221182,39.0588278021367" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="379,141"
+          Size="379,184"
+          Id="Package\DUPLICATION_DETAILS_HTD"
+          TopLeft="333.142863066019,556.969415738855" />
+        <NodeLayout
+          Size="380,48"
+          Id="Package\SQL_MRA_DUPLICATION_DETAILS_FACT_HTD_TABLE"
+          TopLeft="328.00000583558,458.691767806611" />
+        <NodeLayout
+          Size="382,42"
+          Id="Package\SQL_MRA_DUPLICATION_DETAILS_MAIL_NOTIFICATION_TASK"
+          TopLeft="328.571434416739,791.247063671099" />
+        <NodeLayout
+          Size="275,42"
+          Id="Package\SQL_MRA_DUPLICATION_DETAILS_TASK"
+          TopLeft="383.142863066019,34.2588240098789" />
+        <NodeLayout
+          Size="382,42"
+          Id="Package\SQL_MRA_DUPLICATION_DETAILS_TRUNCATE_TABLE"
+          TopLeft="332.000005903699,133.148236656585" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="521.821434484859,76.2588240098789">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,56.8894126467061"
+              Start="0,0"
+              End="0,49.3894126467061">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.3894126467061" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="523.542862941133,174.748236656585">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.6658832177819"
+              Start="0,0"
+              End="0,42.1658832177819">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.1658832177819" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="521.257148741379,740.969415738855">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.277647932244"
+              Start="0,0"
+              End="0,42.777647932244">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.777647932244" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="520.942862907073,408.414119874367">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.277647932244"
+              Start="0,0"
+              End="0,42.777647932244">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.777647932244" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="520.371434450799,506.691767806611">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.277647932244"
+              Start="0,0"
+              End="0,42.777647932244">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.777647932244" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

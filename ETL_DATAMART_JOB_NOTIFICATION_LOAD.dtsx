@@ -1,0 +1,547 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/12/2019 5:55:50 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ROAMIE"
+  DTS:CreatorName="JNCB\KathiravanS"
+  DTS:DTSID="{CCD4E661-A7AF-4D47-B3E9-8EBC00B8DAAB}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="14.0.0600.250"
+  DTS:LocaleID="8201"
+  DTS:ObjectName="ETL_DATAMART_JOB_NOTIFICATION_LOAD"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="490"
+  DTS:VersionGUID="{EAE19536-DB35-48A5-B09B-450CE7267DD0}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CM_AMBER_AUDIT_SQL_JOBS]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{F67873D6-6D36-4F5D-BE8C-EB3EE9B59528}"
+      DTS:ObjectName="CM_AMBER_AUDIT_SQL_JOBS">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::p_EMAIL_DATABASE]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::p_EMAIL_SERVER]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=BARD;Initial Catalog=Amber_Audit_SQL_Jobs;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CM_AUDIT_FRAMEWORK_FIN10]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{B56CB361-74F8-4D00-B402-D6CC0B6FE4F5}"
+      DTS:ObjectName="CM_AUDIT_FRAMEWORK_FIN10">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::p_AUDIT_DATABASE]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::p_AUDIT_SERVER]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=GEORGE;Initial Catalog=Audit_Framework;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FD142E96-1209-4981-B982-19F7A550C6B3}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&#xA;DECLARE @SUCCESS_COUNT INT&#xA;DECLARE @INPROGRESS_COUNT INT&#xA;DECLARE @FAILED_COUNT INT&#xA;DECLARE @SUCCESS_COUNT_OLD INT&#xA;DECLARE @INPROGRESS_COUNT_OLD INT &#xA;DECLARE @FAILED_COUNT_OLD INT&#xA;&#xA;&#xA;&#xA;SELECT @SUCCESS_COUNT =  COUNT(1)&#xA;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM &#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;&#x9;&#x9;&#x9;(&#xA;                   243,221,269,263,597,247,257,245,225,255,898,369,378,663,261,253,615,227,213,241,267,1,22,16,42,26,185,&#xA;                   5,43,183,313,325,44,12,141,329,163,19,6,21,25,41,207,244,222,270,264,598,248,258,246,226,256,899,415,424,&#xA;                   664,262,254,616,228,214,242,268,53,74,68,94,78,186,57,95,184,314,326,96,64,142,330,164,71,58,73,77,93,208&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#x9;&#x9;&#x9;) RES&#xA;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R&#xA;&#xA;&#xA;&#xA;SELECT @INPROGRESS_COUNT= COUNT(1)&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM &#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;                    (&#xA;                    243,221,269,263,597,247,257,245,225,255,898,369,378,663,261,253,615,227,213,241,267,1,22,16,42,26,185,&#xA;                    5,43,183,313,325,44,12,141,329,163,19,6,21,25,41,207,244,222,270,264,598,248,258,246,226,256,899,415,424,&#xA;                    664,262,254,616,228,214,242,268,53,74,68,94,78,186,57,95,184,314,326,96,64,142,330,164,71,58,73,77,93,208&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RES&#xA;&#x9;&#x9;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG IN (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;'RUNNING'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;,'DFT LOAD COMPLETED'&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) ) R&#xA;&#xA;&#xA;SELECT @FAILED_COUNT = COUNT(1)&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_FLAG FROM&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_FLAG&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM [DBO].[BATCH_EXECUTION_STATUS]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE PACKAGE_ID IN &#xA;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;                    243,221,269,263,597,247,257,245,225,255,898,369,378,663,261,253,615,227,213,241,267,1,22,16,42,26,185,&#xA;                    5,43,183,313,325,44,12,141,329,163,19,6,21,25,41,207,244,222,270,264,598,248,258,246,226,256,899,415,424,&#xA;                    664,262,254,616,228,214,242,268,53,74,68,94,78,186,57,95,184,314,326,96,64,142,330,164,71,58,73,77,93,208&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RES&#xA;&#x9;&#x9;&#x9;&#x9;WHERE RW = 1 AND STATUS_FLAG = 'FAILED' )R&#xA;&#xA;&#xA;SELECT @SUCCESS_COUNT_OLD = COUNT(1)&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_DESC FROM &#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY JOB_ID ORDER BY NEXT_DEST_BTCH_ID DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_DESC&#xA;&#x9;&#x9;&#x9;FROM &quot; + @[$Project::p_LANDING_DATABASE] +&quot;.&quot;+ &quot;[CDOOWN].[BATCH_EXECUTION_STATS]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE JOB_ID IN &#xA;                    (&#xA;                    706,707&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;AND CAST(JOB_RUN_START_TS AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#x9;&#x9;&#x9;) RES&#xA;&#x9;&#x9;WHERE RW = 1 AND  STATUS_DESC = 'SUCCESS' )R&#xA;&#xA;&#xA;SELECT @INPROGRESS_COUNT_OLD= COUNT(1)&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_DESC FROM &#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY JOB_ID ORDER BY NEXT_DEST_BTCH_ID DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM &quot; + @[$Project::p_LANDING_DATABASE] +&quot;.&quot;+ &quot;[CDOOWN].[BATCH_EXECUTION_STATS]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE JOB_ID IN &#xA;                                                                 (&#xA;                                                                               706,707&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND CAST(JOB_RUN_START_TS AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RES&#xA;&#x9;&#x9;&#x9;&#x9;WHERE RW = 1 AND STATUS_DESC IS NULL ) R&#xA;&#xA;SELECT @FAILED_COUNT_OLD = COUNT(1)&#xA;&#x9;&#x9;&#x9;&#x9;FROM ( SELECT RW,STATUS_DESC FROM &#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SELECT ROW_NUMBER() OVER (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;PARTITION BY JOB_ID ORDER BY NEXT_DEST_BTCH_ID DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;) RW,STATUS_DESC&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;FROM &quot; + @[$Project::p_LANDING_DATABASE] +&quot;.&quot;+ &quot;[CDOOWN].[BATCH_EXECUTION_STATS]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;WHERE JOB_ID IN &#xA;                                                                  (&#xA;                                                                             706,707&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;AND CAST(JOB_RUN_START_TS AS DATE) = CAST(GETDATE() AS DATE)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;) RES&#xA;&#x9;&#x9;&#x9;&#x9;WHERE RW = 1 AND STATUS_DESC = 'FAILED' ) R&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#xA;&#xA;SELECT ?= @SUCCESS_COUNT&#xA;SELECT ?= @INPROGRESS_COUNT&#xA;SELECT ?= @FAILED_COUNT&#xA;SELECT ?= @SUCCESS_COUNT_OLD&#xA;SELECT ?= @INPROGRESS_COUNT_OLD&#xA;SELECT ?= @FAILED_COUNT_OLD&#xA;&#xA;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Execution_Status_Query">
+      <DTS:VariableValue
+        DTS:DataType="8">
+DECLARE @SUCCESS_COUNT INT
+DECLARE @INPROGRESS_COUNT INT
+DECLARE @FAILED_COUNT INT
+DECLARE @SUCCESS_COUNT_OLD INT
+DECLARE @INPROGRESS_COUNT_OLD INT 
+DECLARE @FAILED_COUNT_OLD INT
+
+
+
+SELECT @SUCCESS_COUNT =  COUNT(1)
+		FROM ( SELECT RW,STATUS_FLAG FROM 
+				(
+			SELECT ROW_NUMBER() OVER (
+					PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+					) RW,STATUS_FLAG
+			FROM [DBO].[BATCH_EXECUTION_STATUS]
+			WHERE PACKAGE_ID IN 
+			(
+                   243,221,269,263,597,247,257,245,225,255,898,369,378,663,261,253,615,227,213,241,267,1,22,16,42,26,185,
+                   5,43,183,313,325,44,12,141,329,163,19,6,21,25,41,207,244,222,270,264,598,248,258,246,226,256,899,415,424,
+                   664,262,254,616,228,214,242,268,53,74,68,94,78,186,57,95,184,314,326,96,64,142,330,164,71,58,73,77,93,208
+					)
+				AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+			) RES
+		WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R
+
+
+
+SELECT @INPROGRESS_COUNT= COUNT(1)
+				FROM ( SELECT RW,STATUS_FLAG FROM 
+				(
+					SELECT ROW_NUMBER() OVER (
+							PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+							) RW,STATUS_FLAG
+					FROM [DBO].[BATCH_EXECUTION_STATUS]
+					WHERE PACKAGE_ID IN 
+                    (
+                    243,221,269,263,597,247,257,245,225,255,898,369,378,663,261,253,615,227,213,241,267,1,22,16,42,26,185,
+                    5,43,183,313,325,44,12,141,329,163,19,6,21,25,41,207,244,222,270,264,598,248,258,246,226,256,899,415,424,
+                    664,262,254,616,228,214,242,268,53,74,68,94,78,186,57,95,184,314,326,96,64,142,330,164,71,58,73,77,93,208
+					)
+						AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+					) RES
+				WHERE RW = 1 AND STATUS_FLAG IN (
+							'RUNNING'
+							,'DFT LOAD COMPLETED'
+							) ) R
+
+
+SELECT @FAILED_COUNT = COUNT(1)
+				FROM ( SELECT RW,STATUS_FLAG FROM
+				(
+					SELECT ROW_NUMBER() OVER (
+							PARTITION BY PACKAGE_ID ORDER BY EXECUTION_ID DESC
+							) RW,STATUS_FLAG
+					FROM [DBO].[BATCH_EXECUTION_STATUS]
+					WHERE PACKAGE_ID IN 
+					 (
+                    243,221,269,263,597,247,257,245,225,255,898,369,378,663,261,253,615,227,213,241,267,1,22,16,42,26,185,
+                    5,43,183,313,325,44,12,141,329,163,19,6,21,25,41,207,244,222,270,264,598,248,258,246,226,256,899,415,424,
+                    664,262,254,616,228,214,242,268,53,74,68,94,78,186,57,95,184,314,326,96,64,142,330,164,71,58,73,77,93,208
+					)
+						AND CAST(EXEC_START_TIME AS DATE) = CAST(GETDATE() AS DATE)
+					) RES
+				WHERE RW = 1 AND STATUS_FLAG = 'FAILED' )R
+
+
+SELECT @SUCCESS_COUNT_OLD = COUNT(1)
+				FROM ( SELECT RW,STATUS_DESC FROM 
+				(
+			SELECT ROW_NUMBER() OVER (
+					PARTITION BY JOB_ID ORDER BY NEXT_DEST_BTCH_ID DESC
+					) RW,STATUS_DESC
+			FROM PROD_EIMDW_Landing.[CDOOWN].[BATCH_EXECUTION_STATS]
+					WHERE JOB_ID IN 
+                    (
+                    706,707
+					)
+				AND CAST(JOB_RUN_START_TS AS DATE) = CAST(GETDATE() AS DATE)
+			) RES
+		WHERE RW = 1 AND  STATUS_DESC = 'SUCCESS' )R
+
+
+SELECT @INPROGRESS_COUNT_OLD= COUNT(1)
+				FROM ( SELECT RW,STATUS_DESC FROM 
+				(
+					SELECT ROW_NUMBER() OVER (
+							PARTITION BY JOB_ID ORDER BY NEXT_DEST_BTCH_ID DESC
+							) RW,STATUS_DESC
+					FROM PROD_EIMDW_Landing.[CDOOWN].[BATCH_EXECUTION_STATS]
+					WHERE JOB_ID IN 
+                                                                 (
+                                                                               706,707
+					)
+						AND CAST(JOB_RUN_START_TS AS DATE) = CAST(GETDATE() AS DATE)
+					) RES
+				WHERE RW = 1 AND STATUS_DESC IS NULL ) R
+
+SELECT @FAILED_COUNT_OLD = COUNT(1)
+				FROM ( SELECT RW,STATUS_DESC FROM 
+				(
+					SELECT ROW_NUMBER() OVER (
+							PARTITION BY JOB_ID ORDER BY NEXT_DEST_BTCH_ID DESC
+							) RW,STATUS_DESC
+					FROM PROD_EIMDW_Landing.[CDOOWN].[BATCH_EXECUTION_STATS]
+					WHERE JOB_ID IN 
+                                                                  (
+                                                                             706,707
+					)
+						AND CAST(JOB_RUN_START_TS AS DATE) = CAST(GETDATE() AS DATE)
+					) RES
+				WHERE RW = 1 AND STATUS_DESC = 'FAILED' ) R
+														
+
+
+SELECT ?= @SUCCESS_COUNT
+SELECT ?= @INPROGRESS_COUNT
+SELECT ?= @FAILED_COUNT
+SELECT ?= @SUCCESS_COUNT_OLD
+SELECT ?= @INPROGRESS_COUNT_OLD
+SELECT ?= @FAILED_COUNT_OLD
+
+</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{47B5F461-A555-4881-A2B0-4C391BBEB55C}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Failed_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F19B97B7-8B92-43D2-8368-4698E5D3B6D6}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Failed_Count_Old">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A6303772-A299-415B-90E7-AA3DD741CBB7}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::v_Failed_Count] +  @[User::v_Failed_Count_Old]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Failed_Total_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EC861935-A7DC-496E-90F6-B185C0056428}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Inprogress_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B66DBD2B-F0D1-4A14-9685-1F684ECC4CEA}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Inprogress_Count_Old">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F94202A5-B0A8-4C7E-8029-07515F52CF12}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::v_Inprogress_Count] +  @[User::v_Inprogress_Count_Old]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Inprogress_Total_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{152F9E50-4FB6-48F6-864A-79455FE6AB30}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Iterate">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A6C582CC-6929-43BB-B268-7ED950195EAF}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::p_JOB_COUNT_DATAMART]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Job_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">88</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{904B9C3B-3897-4D83-A754-9F8859FEA210}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::p_MAX_VALUE_DATAMART]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Max_Value">
+      <DTS:VariableValue
+        DTS:DataType="3">3</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{57E08546-E238-4ADD-95F4-58959244AF04}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Success_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{AFE32364-DC67-4BED-8C4D-0FECE97D88A4}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Success_Count_Old">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F3B5BA73-642F-46EE-BBEE-E78B80312621}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::v_Success_Count] +  @[User::v_Success_Count_Old]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="v_Total_Success_Count">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\For Loop Container"
+      DTS:AssignExpression="@v_Iterate  = @v_Iterate +1"
+      DTS:CreationName="STOCK:FORLOOP"
+      DTS:Description="For Loop Container"
+      DTS:DTSID="{ECDB4141-2046-4A94-A42E-FABEE65CDC22}"
+      DTS:EvalExpression="@v_Iterate  &lt;= @v_Max_Value"
+      DTS:ExecutableType="STOCK:FORLOOP"
+      DTS:InitExpression="@v_Iterate= 0"
+      DTS:LocaleID="-1"
+      DTS:MaxConcurrent="1"
+      DTS:ObjectName="For Loop Container">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\For Loop Container\SQL_BATCH_EXECUTION_STATUS_COUNT"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{036DA75F-E8BA-4974-BA3A-8122FC002CC7}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL_BATCH_EXECUTION_STATUS_COUNT"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B56CB361-74F8-4D00-B402-D6CC0B6FE4F5}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::v_Execution_Status_Query"
+              SQLTask:TypeConversionMode="None" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::v_Success_Count"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::v_Inprogress_Count"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="User::v_Failed_Count"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="3"
+                SQLTask:DtsVariableName="User::v_Success_Count_Old"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="4"
+                SQLTask:DtsVariableName="User::v_Inprogress_Count_Old"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="5"
+                SQLTask:DtsVariableName="User::v_Failed_Count_Old"
+                SQLTask:ParameterDirection="Output"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\For Loop Container\SQL_BREAK_LOOP"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{3359D63D-D16A-4313-B435-8C158F5451A2}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL_BREAK_LOOP"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{F67873D6-6D36-4F5D-BE8C-EB3EE9B59528}"
+              SQLTask:SqlStatementSource="WAITFOR DELAY '00:25:00'; " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\For Loop Container\SQL_JOB_NOTIFICATION"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{08E2D896-72C1-4A8F-B8F2-D475C26E831C}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL_JOB_NOTIFICATION"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{F67873D6-6D36-4F5D-BE8C-EB3EE9B59528}"
+              SQLTask:SqlStatementSource="DECLARE @JOB_COUNT INT = ?&#xA;DECLARE @TOTAL_SUCCESS_COUNT INT = ?&#xA;DECLARE @INPROGRESS_TOTAL_COUNT INT = ?&#xA;DECLARE @FAILED_TOTAL_COUNT INT = ?&#xA;DECLARE @MAXVALUE INT = ?&#xA;DECLARE @ITERATE INT = ?&#xA;&#xA;&#xA;EXEC [dbo].[SP_DATAMART_JOB_NOTIFICATION]  &#xA;     @JOB_COUNT &#xA;&#x9;,@TOTAL_SUCCESS_COUNT&#xA;&#x9;,@INPROGRESS_TOTAL_COUNT&#xA;&#x9;,@FAILED_TOTAL_COUNT&#xA;&#x9;,@MAXVALUE&#xA;                 ,@ITERATE " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::v_Job_Count"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::v_Total_Success_Count"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="User::v_Inprogress_Total_Count"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="3"
+                SQLTask:DtsVariableName="User::v_Failed_Total_Count"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="4"
+                SQLTask:DtsVariableName="User::v_Max_Value"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="5"
+                SQLTask:DtsVariableName="User::v_Iterate"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\For Loop Container.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{1D112619-EFB7-4D91-9473-DBAC0F2D26F0}"
+          DTS:From="Package\For Loop Container\SQL_BATCH_EXECUTION_STATUS_COUNT"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\For Loop Container\SQL_JOB_NOTIFICATION" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\For Loop Container.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{3F501398-B22C-417D-AEC1-7C7E5549B1C9}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::v_Total_Success_Count] !=  @[User::v_Job_Count]"
+          DTS:From="Package\For Loop Container\SQL_JOB_NOTIFICATION"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\For Loop Container\SQL_BREAK_LOOP" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="281.6,41.6"
+          Id="Package\For Loop Container\SQL_BATCH_EXECUTION_STATUS_COUNT"
+          TopLeft="201.642855987257,25.2647058930776" />
+        <NodeLayout
+          Size="270.4,43.2"
+          Id="Package\For Loop Container\SQL_BREAK_LOOP"
+          TopLeft="205.142855987257,199.764705893078" />
+        <NodeLayout
+          Size="271.2,41.6"
+          Id="Package\For Loop Container\SQL_JOB_NOTIFICATION"
+          TopLeft="207,113" />
+        <EdgeLayout
+          Id="Package\For Loop Container.PrecedenceConstraints[Constraint]"
+          TopLeft="342.571427993629,67.2647058930776">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.7352941069224"
+              Start="0,0"
+              End="0,38.2352941069224">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.2352941069224" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\For Loop Container.PrecedenceConstraints[Constraint 1]"
+          TopLeft="341.321427993629,155">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,44.764705893078"
+              Start="0,0"
+              End="0,37.264705893078">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.264705893078" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-8,10.632352946539,16,16"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="644.8,358.4"
+          Size="644.8,400.8"
+          Id="Package\For Loop Container"
+          TopLeft="242.985713422055,56.3823524907386" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
