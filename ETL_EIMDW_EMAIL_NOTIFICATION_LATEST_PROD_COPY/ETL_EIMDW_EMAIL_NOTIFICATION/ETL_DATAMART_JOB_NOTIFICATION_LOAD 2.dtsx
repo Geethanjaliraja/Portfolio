@@ -18,7 +18,7 @@
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
-      DTS:refId="Package.ConnectionManagers[CM_AUDIT_FRAMEWORK_FIN10]"
+      DTS:refId="Package.ConnectionManagers[CM_AUDIT_FRAMEWORK]"
       DTS:CreationName="OLEDB"
       DTS:DTSID="{55D020E1-9477-4BC0-8BD8-B3A11BD1E8EA}"
       DTS:ObjectName="CM_AUDIT_FRAMEWORK_FIN10">
