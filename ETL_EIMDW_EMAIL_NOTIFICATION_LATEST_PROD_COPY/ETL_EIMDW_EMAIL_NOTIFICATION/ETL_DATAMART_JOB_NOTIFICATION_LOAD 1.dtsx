@@ -9,7 +9,7 @@
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="13.0.4001.0"
   DTS:LocaleID="8201"
-  DTS:ObjectName="ETL_DATAMART_JOB_NOTIFICATION_LOAD"
+  DTS:ObjectName="ETL_DATAMART_JOB_NOTIFICATION_LOAD1"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
   DTS:VersionBuild="508"
