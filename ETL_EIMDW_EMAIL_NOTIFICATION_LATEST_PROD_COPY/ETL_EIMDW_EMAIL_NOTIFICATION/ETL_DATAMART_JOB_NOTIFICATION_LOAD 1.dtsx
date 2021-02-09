@@ -18,7 +18,7 @@
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
-      DTS:refId="Package.ConnectionManagers[CM_AUDIT_FRAMEWORK_FIN10]"
+      DTS:refId="Package.ConnectionManagers[CM_AUDIT_FRAMEWORK]"
       DTS:CreationName="OLEDB"
       DTS:DTSID="{3113720E-4E37-4B8E-805E-3565BF5BBD01}"
       DTS:ObjectName="CM_AUDIT_FRAMEWORK_FIN10">
@@ -72,7 +72,7 @@ SELECT @SUCCESS_COUNT_PX3000 =  COUNT(1)
 
 			) RES
 
-		WHERE RW = 1 AND STATUS_FLAG = 'COMPLETED' ) R
+		WHERE RW = 1 AND STATUS_FLAG = 'FAILED' ) R
 
 
 
