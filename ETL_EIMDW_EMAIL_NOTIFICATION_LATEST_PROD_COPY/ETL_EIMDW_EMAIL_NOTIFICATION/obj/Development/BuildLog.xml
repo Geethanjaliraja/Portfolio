@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<BuildLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectInfo>
+    <Name>ETL_EIMDW_EMAIL_NOTIFICATION</Name>
+    <LastWriteTime>2021-01-22T10:29:18.4266285Z</LastWriteTime>
+    <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+  </ProjectInfo>
+  <LastBuildInfos>
+    <ProjectBuildItemInfo>
+      <Name>ETL_MRA_DUPLICATE_CHECK_NOTIFICATION.dtsx</Name>
+      <LastWriteTime>2020-09-09T16:05:01.0312421Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_MRA_JOB_NOTIFICATION_LOAD.dtsx</Name>
+      <LastWriteTime>2020-09-09T16:05:01.0532449Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_PRIME_NOTIFICATIONS_NIGHT_LOAD.dtsx</Name>
+      <LastWriteTime>2020-09-25T10:57:54.2659184Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_PRIME_NOTIFICATIONS_DAY_LOAD.dtsx</Name>
+      <LastWriteTime>2020-09-25T14:04:12.1018046Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_FINCL10_JOB_NOTIFICATION_LOAD.dtsx</Name>
+      <LastWriteTime>2020-09-28T17:41:49.7547067Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_DATAMART_JOB_NOTIFICATION_LOAD.dtsx</Name>
+      <LastWriteTime>2020-10-30T09:57:55.0304825Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_DATAMART_JOB_NOTIFICATION_LOAD 1.dtsx</Name>
+      <LastWriteTime>2021-01-25T14:44:37.7819675Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+    <ProjectBuildItemInfo>
+      <Name>ETL_DATAMART_JOB_NOTIFICATION_LOAD 2.dtsx</Name>
+      <LastWriteTime>2021-01-25T13:36:11.7688122Z</LastWriteTime>
+      <LastKnownProtectionLevel>DontSaveSensitive</LastKnownProtectionLevel>
+    </ProjectBuildItemInfo>
+  </LastBuildInfos>
+</BuildLog>
